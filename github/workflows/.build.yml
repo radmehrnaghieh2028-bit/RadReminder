@@ -1,0 +1,59 @@
+name: Build RadReminder APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEY: ${{ secrets.KEYSTORE_B64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Arrange files
+        run: |
+          mkdir -p www assets
+          [ -f index.html ] && mv index.html www/index.html || true
+          for f in icon-only icon-foreground icon-background splash splash-dark; do [ -f $f.png ] && mv $f.png assets/ || true; done
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - run: npm install
+      - name: Bundle Vazirmatn font offline
+        run: |
+          mkdir -p www/fonts
+          cp node_modules/@fontsource/vazirmatn/files/vazirmatn-arabic-{400,700,900}-normal.woff2 www/fonts/
+          cp node_modules/@fontsource/vazirmatn/files/vazirmatn-latin-{400,700,900}-normal.woff2 www/fonts/
+          ls www/fonts
+      - run: npx cap add android
+      - name: Generate icons and splash
+        run: npx --yes @capacitor/assets generate --android
+      - name: Add notification permissions
+        run: |
+          M=android/app/src/main/AndroidManifest.xml
+          sed -i 's#</manifest>#    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>\n    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>\n    <uses-permission android:name="android.permission.VIBRATE"/>\n</manifest>#' $M
+      - run: npx cap sync android
+      - name: Build debug APK (for testing)
+        run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RadReminder-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Build signed release APK (needs secrets)
+        if: env.HAS_KEY == 'true'
+        env:
+          KS_B64: ${{ secrets.KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          cd android && ./gradlew assembleRelease
+          echo "$KS_B64" | base64 -d > ../release.jks
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          $BT/zipalign -f -p 4 app/build/outputs/apk/release/app-release-unsigned.apk ../aligned.apk
+          $BT/apksigner sign --ks ../release.jks --ks-pass pass:$KS_PASS --ks-key-alias $KS_ALIAS --out ../RadReminder-release.apk ../aligned.apk
+      - uses: actions/upload-artifact@v4
+        if: env.HAS_KEY == 'true'
+        with:
+          name: RadReminder-release-for-Myket
+          path: RadReminder-release.apk
