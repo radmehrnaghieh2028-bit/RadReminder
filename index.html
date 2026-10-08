@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09070f">
+<title>RadReminder</title>
+<style>
+@font-face{font-family:'Vazirmatn';font-weight:400;font-display:swap;src:url(fonts/vazirmatn-arabic-400-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+FB50-FDFF,U+FE70-FEFE}
+@font-face{font-family:'Vazirmatn';font-weight:400;font-display:swap;src:url(fonts/vazirmatn-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Vazirmatn';font-weight:700;font-display:swap;src:url(fonts/vazirmatn-arabic-700-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+FB50-FDFF,U+FE70-FEFE}
+@font-face{font-family:'Vazirmatn';font-weight:700;font-display:swap;src:url(fonts/vazirmatn-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Vazirmatn';font-weight:900;font-display:swap;src:url(fonts/vazirmatn-arabic-900-normal.woff2) format('woff2');unicode-range:U+0600-06FF,U+200C-200E,U+2010-2011,U+FB50-FDFF,U+FE70-FEFE}
+@font-face{font-family:'Vazirmatn';font-weight:900;font-display:swap;src:url(fonts/vazirmatn-latin-900-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{--bg:#07060b;--card:#111019;--card2:#171320;--purple:#8b5cf6;--purple2:#a855f7;--text:#f7f3ff;--muted:#9891a8;--line:#272132}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% -10%,#28134b 0,#0c0912 32%,var(--bg) 70%);color:var(--text);font-family:'Vazirmatn',system-ui,sans-serif;min-height:100vh}
+body:before{content:"";position:fixed;width:260px;height:260px;border-radius:50%;background:#7c3aed22;filter:blur(70px);top:10%;right:-90px;pointer-events:none}
+.app{max-width:650px;margin:auto;padding:24px 17px 105px;animation:page .6s ease}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
+.brand{font-size:27px;font-weight:900;letter-spacing:-1px}.brand b{color:#a855f7}
+.badge{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#9b5cff,#5423a5);display:grid;place-items:center;box-shadow:0 0 25px #8b5cf655;font-size:20px}
+h1{font-size:25px;margin:0 0 7px}.sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+.panel{background:linear-gradient(145deg,#14111c,#0e0c13);border:1px solid var(--line);border-radius:24px;padding:19px;box-shadow:0 18px 50px #0005;margin-bottom:15px}
+label{display:block;color:#b8b0c7;font-size:12px;margin:10px 3px 6px}
+input,select{width:100%;background:#0b0910;color:var(--text);border:1px solid #2b2437;border-radius:13px;padding:13px;outline:none;font-family:inherit;transition:.25s}
+input:focus,select:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px #8b5cf618}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dategrid{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:7px}
+.add{width:100%;margin-top:16px;padding:14px;border:0;border-radius:15px;color:white;font-family:inherit;font-weight:800;font-size:15px;background:linear-gradient(135deg,#a855f7,#6d28d9);box-shadow:0 10px 28px #7c3aed40;transition:.2s;cursor:pointer}
+.add:active{transform:scale(.97)}
+.sectionTitle{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 13px}.sectionTitle h2{font-size:17px;margin:0}.count{font-size:11px;color:#c9b5ff;background:#6d28d922;border:1px solid #7c3aed44;padding:5px 9px;border-radius:20px}
+.reminder{display:flex;align-items:center;gap:12px;padding:14px;border-radius:17px;background:#15121d;border:1px solid #25202f;margin:9px 0;animation:slide .35s ease both}
+.dot{width:11px;height:11px;border-radius:50%;background:#a855f7;box-shadow:0 0 13px #a855f7;flex:none}
+.info{flex:1;min-width:0}.rtitle{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rdate{font-size:11px;color:var(--muted);margin-top:4px}
+.del{border:0;background:#241726;color:#c9a8d9;border-radius:10px;padding:8px 10px;font-family:inherit;cursor:pointer}
+.empty{text-align:center;padding:30px 10px;color:#777080;font-size:13px}
+.nav0{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);width:min(615px,calc(100% - 30px));background:#100d16ee;backdrop-filter:blur(18px);border:1px solid #2b2336;border-radius:21px;padding:7px;display:grid;grid-template-columns:1fr 1fr;gap:5px;z-index:10;box-shadow:0 15px 45px #000b}
+.nav button{background:transparent;color:#898192;border:0;border-radius:16px;padding:11px 8px;font-family:inherit;font-size:12px;cursor:pointer;transition:.25s}
+.nav button.active{background:linear-gradient(135deg,#7c3aed,#9f55f5);color:white;box-shadow:0 6px 18px #7c3aed55}
+.toast{position:fixed;top:18px;left:50%;transform:translate(-50%,-100px);background:#1b1525;border:1px solid #543477;color:white;padding:11px 17px;border-radius:13px;font-size:12px;z-index:30;transition:.35s;box-shadow:0 10px 35px #0008}.toast.show{transform:translate(-50%,0)}
+.hidden{display:none!important}
+@keyframes page{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes slide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:400px){.app{padding-left:13px;padding-right:13px}.panel{padding:15px}}
+
+.nav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);width:min(615px,calc(100% - 30px));background:#100d16ee;backdrop-filter:blur(18px);border:1px solid #2b2336;border-radius:21px;padding:6px;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;z-index:10;box-shadow:0 15px 45px #000b}
+.nav button{background:transparent;color:#898192;border:0;border-radius:15px;padding:9px 2px;font-family:inherit;font-size:11px;cursor:pointer;transition:.25s}
+.nav button.active{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff}
+.app{zoom:var(--fs,1)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:15px}
+.stat{background:#14111c;border:1px solid var(--line);border-radius:18px;padding:13px 8px;text-align:center}.stat b{display:block;font-size:22px;color:var(--purple2)}.stat span{font-size:11px;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;justify-content:space-between;height:110px;gap:6px;padding-top:6px}.bar{flex:1;text-align:center;font-size:10px;color:var(--muted)}.bar i{display:block;background:linear-gradient(var(--purple2),var(--purple));border-radius:7px 7px 3px 3px;min-height:4px;margin-bottom:5px}
+.chips{display:flex;gap:7px;overflow-x:auto;margin-bottom:12px;padding-bottom:3px}.chip{flex:none;border:1px solid #2b2437;background:#0b0910;color:#b8b0c7;border-radius:20px;padding:7px 12px;font-family:inherit;font-size:12px;cursor:pointer}.chip.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+.quick{display:flex;gap:7px;margin-top:8px}.quick button{flex:1}
+.btn2{border:1px solid #3a2f4d;background:#1b1525;color:#e6dcff;border-radius:12px;padding:10px;font-family:inherit;font-size:12px;cursor:pointer}
+.reminder.done{opacity:.5}.reminder.done .rtitle{text-decoration:line-through}.reminder.late .dot{background:#f43f5e;box-shadow:0 0 13px #f43f5e}
+.dot{background:var(--purple);box-shadow:0 0 13px var(--purple)}
+.acts{display:flex;gap:6px}.ok{border:0;background:#1d2a22;color:#8fe0b0;border-radius:10px;padding:8px 10px;font-family:inherit;cursor:pointer}
+.rep{font-size:10px;color:#c9b5ff;margin-right:6px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.cal .h{font-size:11px;color:var(--muted);padding:4px 0}.cal .h.f{color:#f87171}
+.cd{aspect-ratio:1;border-radius:12px;border:1px solid transparent;background:#0f0c15;color:var(--text);font-family:inherit;font-size:13px;position:relative;cursor:pointer}
+.cd.hol{color:#f87171}.cd.today{border-color:var(--purple)}.cd.sel{background:var(--purple);color:#fff}.cd.has:after{content:"";position:absolute;bottom:5px;left:50%;width:5px;height:5px;margin-left:-2px;border-radius:50%;background:var(--purple2)}.cd.sel.has:after{background:#fff}
+.calhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.calhead h2{margin:0;font-size:17px}
+.sw{display:flex;gap:10px}.sw i{width:34px;height:34px;border-radius:50%;cursor:pointer;border:3px solid transparent}.sw i.on{border-color:#fff}
+.srow{display:flex;justify-content:space-between;align-items:center;margin:8px 0;font-size:13px}
+.modal{position:fixed;inset:0;background:#000a;display:grid;place-items:center;z-index:40;padding:20px}
+.mbox{background:#151020;border:1px solid var(--purple);border-radius:24px;padding:22px;width:min(380px,100%);text-align:center;box-shadow:0 0 50px #7c3aed55}
+.mbox h2{margin:6px 0}.mbox .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:16px}
+.hn{font-size:12px;color:#fca5a5;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand">Rad<b>Reminder</b></div><div class="badge">✦</div></header>
+
+<section id="t-dash">
+<h1 id="hello">امروز</h1><div class="sub" id="todayInfo"></div>
+<div class="stats"><div class="stat"><b id="sToday">۰</b><span>کارهای امروز</span></div><div class="stat"><b id="sDone">۰</b><span>انجام‌شده</span></div><div class="stat"><b id="sLeft">۰</b><span>باقی‌مانده</span></div></div>
+<div class="panel"><div class="sectionTitle"><h2>یادآورهای نزدیک</h2></div><div id="near"></div></div>
+<div class="panel"><div class="sectionTitle"><h2>آمار هفتگی</h2><span class="count">کارهای انجام‌شده</span></div><div class="bars" id="bars"></div></div>
+</section>
+
+<section id="t-create" class="hidden">
+<h1>یادآور جدید</h1><div class="sub">در چند ثانیه بساز.</div>
+<div class="panel">
+<label>عنوان یادآور</label><input id="title" placeholder="مثلاً: درس خواندن">
+<label>تاریخ شمسی</label>
+<div class="dategrid"><select id="year"></select><select id="month"></select><select id="day"></select></div>
+<div class="quick"><button class="btn2" onclick="setQ(0)">امروز</button><button class="btn2" onclick="setQ(1)">فردا</button><button class="btn2" onclick="setQ(7)">هفته بعد</button></div>
+<div class="row"><div><label>ساعت</label><input id="time" type="time"></div><div><label>تکرار</label><select id="rep"><option value="none">بدون تکرار</option><option value="daily">روزانه</option><option value="weekly">هفتگی</option><option value="monthly">ماهانه</option></select></div></div>
+<label>دسته‌بندی</label><select id="cat"></select>
+<button class="add" onclick="addReminder()">＋ ساخت یادآور</button>
+</div>
+</section>
+
+<section id="t-list" class="hidden">
+<h1>یادآورهای من</h1><div class="sub">همه یادآورها اینجاست.</div>
+<div class="chips" id="chips"></div>
+<div class="panel"><div class="sectionTitle"><h2>فهرست</h2><span id="count" class="count"></span></div><div id="list"></div></div>
+</section>
+
+<section id="t-cal" class="hidden">
+<h1>تقویم شمسی</h1><div class="sub">مناسبت‌ها و یادآورها روی تقویم.</div>
+<div class="panel">
+<div class="calhead"><button class="btn2" onclick="calMove(1)">›</button><h2 id="calTitle"></h2><button class="btn2" onclick="calMove(-1)">‹</button></div>
+<div class="cal" id="cal"></div>
+<div class="hn" id="holName"></div>
+</div>
+<div class="panel"><div class="sectionTitle"><h2 id="selTitle">روز انتخابی</h2><button class="btn2" onclick="newOnDay()">＋ یادآور</button></div><div id="dayList"></div></div>
+</section>
+
+<section id="t-set" class="hidden">
+<h1>تنظیمات</h1><div class="sub">ظاهر، اعلان و پشتیبان‌گیری.</div>
+<div class="panel"><label>رنگ بنفش</label><div class="sw" id="sw"></div>
+<label>اندازه نوشته</label><input type="range" id="fs" min="0.9" max="1.25" step="0.05" oninput="S.fs=+this.value;save(1)">
+<div class="srow"><span>صدای اعلان</span><button class="btn2" id="sndBtn" onclick="S.snd=!S.snd;save(1)"></button></div>
+<div class="srow"><span>دسترسی اعلان</span><button class="btn2" onclick="askPerm(true)">فعال‌سازی</button></div>
+<div class="hn" style="color:#9891a8">برای اعلان مطمئن در اندروید: باتری برنامه را «بدون محدودیت» بگذار.</div></div>
+<div class="panel"><label>پشتیبان‌گیری</label>
+<div class="row"><button class="btn2" onclick="exportData()">ذخیره فایل</button><button class="btn2" onclick="copyData()">کپی پشتیبان</button></div>
+<button class="btn2" style="width:100%;margin-top:8px" onclick="$('imp').click()">بازیابی از فایل</button>
+<input type="file" id="imp" accept=".json" class="hidden" onchange="importData(this)"></div>
+</section>
+</div>
+
+<nav class="nav">
+<button data-t="dash" onclick="showTab('dash')">⌂<br>امروز</button>
+<button data-t="create" onclick="showTab('create')">＋<br>ساخت</button>
+<button data-t="list" onclick="showTab('list')">☷<br>فهرست</button>
+<button data-t="cal" onclick="showTab('cal')">▦<br>تقویم</button>
+<button data-t="set" onclick="showTab('set')">⚙<br>تنظیمات</button>
+</nav>
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal hidden"><div class="mbox"><div style="font-size:34px">⏰</div><h2 id="mTitle"></h2><div class="sub" id="mSub"></div>
+<div class="row3"><button class="add" style="margin:0;padding:11px 4px;font-size:13px" onclick="mAct(0)">انجام شد</button><button class="btn2" onclick="mAct(5)">۵ دقیقه</button><button class="btn2" onclick="mAct(10)">۱۰ دقیقه</button></div></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const wd=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+const CATS={school:'📚 مدرسه و تکالیف',personal:'👤 کار شخصی',sport:'🏃 ورزش',event:'🎂 مناسبت و تولد'};
+const REP={none:'',daily:'روزانه',weekly:'هفتگی',monthly:'ماهانه'};
+const HOL={'1-1':'نوروز','1-2':'نوروز','1-3':'نوروز','1-4':'نوروز','1-12':'روز جمهوری اسلامی','1-13':'سیزده‌بدر','3-14':'رحلت امام خمینی','3-15':'قیام ۱۵ خرداد','11-22':'پیروزی انقلاب','12-29':'ملی شدن صنعت نفت'};
+const faDigits=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+function div(a,b){return Math.floor(a/b)}
+function g2j(gy,gm,gd){
+ let gy2=gm>2?gy+1:gy,days=355666+365*gy+div(gy2+3,4)-div(gy2+99,100)+div(gy2+399,400)+gd;
+ for(let i=0;i<gm-1;i++) days += [31,28,31,30,31,30,31,31,30,31,30,31][i];
+ if(gm>2 && ((gy%4==0&&gy%100!=0)||gy%400==0)) days++;
+ let jy=-1595+33*div(days,12053); days%=12053;
+ jy+=4*div(days,1461); days%=1461;
+ if(days>365){jy+=div(days-1,365);days=(days-1)%365}
+ let jm=days<186?1+div(days,31):7+div(days-186,30),jd=1+(days<186?days%31:(days-186)%30);
+ return [jy,jm,jd]
+}
+function j2g(jy,jm,jd){
+ let jy2=jy+1595,days=-355668+365*jy2+div(jy2,33)*8+div((jy2%33)+3,4)+jd;
+ for(let i=1;i<jm;i++) days+=i<=6?31:30;
+ let gy=400*div(days,146097);days%=146097;
+ if(days>36524){gy+=100*div(--days,36524);days%=36524;if(days>=365)days++}
+ gy+=4*div(days,1461);days%=1461;
+ if(days>365){gy+=div(days-1,365);days=(days-1)%365}
+ let gd=days+1,gm=0;
+ const ml=[31,28,31,30,31,30,31,31,30,31,30,31];
+ for(let i=0;i<12;i++){let x=ml[i]+(i==1&&((gy%4==0&&gy%100!=0)||gy%400==0)?1:0);if(gd<=x){gm=i+1;break}gd-=x}
+ return [gy,gm,gd]
+}
+
+const mlen=(y,m)=>m<=6?31:m<=11?30:(g2j(...j2g(y,12,30)).join()===[y,12,30].join()?30:29);
+const wdIdx=dt=>(dt.getDay()+1)%7;
+const jOf=ts=>g2j(new Date(ts).getFullYear(),new Date(ts).getMonth()+1,new Date(ts).getDate());
+const key=a=>a[1]+'-'+a[2];
+const fmtT=ts=>{const d=new Date(ts);return faDigits(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'))};
+const fmtD=ts=>{const j=jOf(ts);return faDigits(j[2])+' '+months[j[1]-1]+' '+faDigits(j[0])};
+const safe=s=>s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+
+let S=JSON.parse(localStorage.getItem('rr3')||'null');
+if(!S){let old=[];try{old=JSON.parse(localStorage.getItem('radreminders_v2')||'[]')}catch(e){}
+ S={r:old.map(o=>({id:o.id,title:o.title,stamp:o.stamp,cat:'personal',rep:'none',done:false})),log:[],acc:'#8b5cf6',fs:1,snd:true}}
+function save(ui){try{localStorage.setItem('rr3',JSON.stringify(S))}catch(e){}applyTheme();renderAll();if(!ui)sched()}
+function toast(t){const x=$('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1800)}
+
+/* ---------- native / web notifications ---------- */
+const LN=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications;
+const nid=r=>r.id%2147483000;
+async function askPerm(v){try{if(LN){const p=await LN.requestPermissions();if(v)toast(p.display==='granted'?'اعلان فعال شد ✦':'دسترسی اعلان داده نشد')}else if('Notification' in window){const p=await Notification.requestPermission();if(v)toast(p==='granted'?'اعلان فعال شد ✦':'دسترسی اعلان داده نشد')}else if(v)toast('این مرورگر اعلان ندارد')}catch(e){}}
+async function sched(){
+ if(!LN)return;
+ try{const pend=await LN.getPending();if(pend.notifications.length)await LN.cancel({notifications:pend.notifications});
+ const list=[];
+ S.r.forEach(r=>{if(r.done)return;
+  const at=r.snz&&r.snz>Date.now()?r.snz:r.stamp;if(at<=Date.now())return;
+  const n={id:nid(r),title:'RadReminder ✦',body:r.title,schedule:{at:new Date(at),allowWhileIdle:true}};
+  if(!(r.snz&&r.snz>Date.now())&&r.rep!=='none'){n.schedule.repeats=true;n.schedule.every={daily:'day',weekly:'week',monthly:'month'}[r.rep]}
+  list.push(n)});
+ if(list.length)await LN.schedule({notifications:list})}catch(e){}
+}
+function beep(){if(!S.snd)return;try{const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=880;g.gain.setValueAtTime(.2,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.7);o.start();o.stop(c.currentTime+.7)}catch(e){}}
+
+/* ---------- reminders logic ---------- */
+function nextStamp(ts,rep){const d=new Date(ts);
+ if(rep==='daily'){d.setDate(d.getDate()+1);return d.getTime()}
+ if(rep==='weekly'){d.setDate(d.getDate()+7);return d.getTime()}
+ let [jy,jm,jd]=jOf(ts);jm++;if(jm>12){jm=1;jy++}jd=Math.min(jd,mlen(jy,jm));
+ const g=j2g(jy,jm,jd);return new Date(g[0],g[1]-1,g[2],d.getHours(),d.getMinutes()).getTime()}
+function complete(id){const r=S.r.find(x=>x.id===id);if(!r)return;S.log.push(Date.now());delete r.snz;r.fired=false;
+ if(r.rep!=='none'){do{r.stamp=nextStamp(r.stamp,r.rep)}while(r.stamp<=Date.now())}else r.done=true;
+ S.r.sort((a,b)=>a.stamp-b.stamp);save();toast('آفرین! انجام شد ✓')}
+function undo(id){const r=S.r.find(x=>x.id===id);if(r){r.done=false;r.fired=false;save()}}
+function removeReminder(id){S.r=S.r.filter(x=>x.id!==id);save();toast('یادآور حذف شد')}
+function addReminder(){
+ const title=$('title').value.trim(),time=$('time').value;
+ if(!title||!time){toast('عنوان و ساعت را وارد کن');return}
+ const g=j2g(+$('year').value,+$('month').value,+$('day').value),t=time.split(':').map(Number);
+ S.r.push({id:Date.now(),title,stamp:new Date(g[0],g[1]-1,g[2],t[0],t[1]).getTime(),cat:$('cat').value,rep:$('rep').value,done:false});
+ S.r.sort((a,b)=>a.stamp-b.stamp);askPerm();save();$('title').value='';toast('یادآور ساخته شد ✦');showTab('list')}
+
+/* ---------- in-app alarm ---------- */
+let cur=null;
+function check(){if(cur)return;const n=Date.now();
+ const r=S.r.find(x=>!x.done&&!x.fired&&(x.snz||x.stamp)<=n);if(!r)return;
+ r.fired=true;cur=r.id;try{localStorage.setItem('rr3',JSON.stringify(S))}catch(e){}
+ $('mTitle').textContent=r.title;$('mSub').textContent=fmtD(r.stamp)+' • '+fmtT(r.stamp);$('modal').classList.remove('hidden');beep();
+ if(!LN&&'Notification' in window&&Notification.permission==='granted'){try{new Notification('RadReminder ✦',{body:r.title})}catch(e){}}}
+function mAct(m){const id=cur;cur=null;$('modal').classList.add('hidden');
+ if(m===0)complete(id);else{const r=S.r.find(x=>x.id===id);if(r){r.snz=Date.now()+m*60000;r.fired=false;save();toast('۵ دقیقه‌ای یادآوری می‌کنم'.replace('۵',faDigits(m)))}}}
+setInterval(check,5000);
+
+/* ---------- create form ---------- */
+const y=$('year'),m=$('month'),d=$('day'),now=new Date(),today=g2j(now.getFullYear(),now.getMonth()+1,now.getDate());
+for(let i=today[0]-1;i<=today[0]+5;i++)y.innerHTML+='<option value="'+i+'">'+faDigits(i)+'</option>';
+months.forEach((x,i)=>m.innerHTML+='<option value="'+(i+1)+'">'+x+'</option>');
+for(let i=1;i<=31;i++)d.innerHTML+='<option value="'+i+'">'+faDigits(i)+'</option>';
+$('cat').innerHTML=Object.entries(CATS).map(([k,v])=>'<option value="'+k+'">'+v+'</option>').join('');
+function setDate(j){y.value=j[0];m.value=j[1];d.value=j[2]}
+function setQ(n){const t=new Date();t.setDate(t.getDate()+n);setDate(g2j(t.getFullYear(),t.getMonth()+1,t.getDate()))}
+setDate(today);$('time').value=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+
+/* ---------- renderers ---------- */
+let filt='all',cy=today[0],cm=today[1],sel=today.slice();
+const dayKey=ts=>jOf(ts).join('-');
+function item(r,i){const late=!r.done&&r.stamp<Date.now();
+ return '<div class="reminder'+(r.done?' done':'')+(late?' late':'')+'" style="animation-delay:'+i*40+'ms"><span class="dot"></span><div class="info"><div class="rtitle">'+safe(r.title)+'</div><div class="rdate">'+fmtD(r.stamp)+' • '+fmtT(r.stamp)+'<span class="rep">'+(CATS[r.cat]||'').split(' ')[0]+' '+REP[r.rep]+'</span></div></div><div class="acts">'+(r.done?'<button class="ok" onclick="undo('+r.id+')">↺</button>':'<button class="ok" onclick="complete('+r.id+')">✓</button>')+'<button class="del" onclick="removeReminder('+r.id+')">✕</button></div></div>'}
+function rDash(){
+ const tk=today.join('-'),td=S.r.filter(r=>dayKey(r.stamp)===tk),dn=S.log.filter(t=>dayKey(t)===tk).length;
+ $('sToday').textContent=faDigits(td.length);$('sDone').textContent=faDigits(dn);$('sLeft').textContent=faDigits(td.filter(r=>!r.done).length);
+ const hol=HOL[key(today)];$('todayInfo').innerHTML=wd[wdIdx(now)]+' '+fmtD(now.getTime())+(hol?'<div class="hn">'+hol+'</div>':'');
+ const h=now.getHours();$('hello').textContent=h<5?'شب بخیر 🌙':h<12?'صبح بخیر ☀️':h<17?'ظهر بخیر':h<20?'عصر بخیر':'شب بخیر 🌙';
+ const nr=S.r.filter(r=>!r.done).slice(0,3);$('near').innerHTML=nr.length?nr.map(item).join(''):'<div class="empty">یادآور بازی نداری ✦</div>';
+ let mx=1,bs=[];for(let i=6;i>=0;i--){const t=new Date();t.setDate(t.getDate()-i);const j=g2j(t.getFullYear(),t.getMonth()+1,t.getDate()).join('-'),c=S.log.filter(x=>dayKey(x)===j).length;mx=Math.max(mx,c);bs.push([wd[wdIdx(t)].slice(0,2),c])}
+ $('bars').innerHTML=bs.map(b=>'<div class="bar"><i style="height:'+(b[1]/mx*80)+'px"></i>'+faDigits(b[1])+'<br>'+b[0]+'</div>').join('')}
+function rList(){
+ $('chips').innerHTML=[['all','همه'],...Object.entries(CATS)].map(([k,v])=>'<button class="chip'+(filt===k?' on':'')+'" onclick="filt=\''+k+'\';rList()">'+v+'</button>').join('');
+ const l=S.r.filter(r=>filt==='all'||r.cat===filt);$('count').textContent=faDigits(l.length)+' مورد';
+ $('list').innerHTML=l.length?l.map(item).join(''):'<div class="empty">هنوز یادآوری‌ای نداری<br>از بخش ساخت شروع کن ✦</div>'}
+function rCal(){
+ $('calTitle').textContent=months[cm-1]+' '+faDigits(cy);
+ const g=j2g(cy,cm,1),off=wdIdx(new Date(g[0],g[1]-1,g[2])),L=mlen(cy,cm),has=new Set(S.r.filter(r=>!r.done).map(r=>dayKey(r.stamp)));
+ let h=wd.map((w,i)=>'<div class="h'+(i==6?' f':'')+'">'+w[0]+'</div>').join('')+'<div></div>'.repeat(off);
+ for(let i=1;i<=L;i++){const k=cy+'-'+cm+'-'+i,hol=HOL[cm+'-'+i]||(wdIdx(new Date(...(()=>{const q=j2g(cy,cm,i);return [q[0],q[1]-1,q[2]]})()))==6);
+  h+='<button class="cd'+(hol?' hol':'')+(k===today.join('-')?' today':'')+(k===sel.join('-')?' sel':'')+(has.has(k)?' has':'')+'" onclick="pick('+i+')">'+faDigits(i)+'</button>'}
+ $('cal').innerHTML=h;const hn=HOL[cm+'-'+sel[2]];
+ $('holName').textContent=sel[0]==cy&&sel[1]==cm&&hn?'🎌 '+hn:'';
+ $('selTitle').textContent=faDigits(sel[2])+' '+months[sel[1]-1]+' '+faDigits(sel[0]);
+ const dl=S.r.filter(r=>dayKey(r.stamp)===sel.join('-'));$('dayList').innerHTML=dl.length?dl.map(item).join(''):'<div class="empty">یادآوری برای این روز نیست</div>'}
+function pick(i){sel=[cy,cm,i];rCal()}
+function calMove(n){cm+=n;if(cm>12){cm=1;cy++}if(cm<1){cm=12;cy--}rCal()}
+function newOnDay(){setDate(sel);showTab('create')}
+function rSet(){$('sw').innerHTML=['#8b5cf6','#a855f7','#c026d3','#6366f1'].map(c=>'<i class="'+(S.acc===c?'on':'')+'" style="background:'+c+'" onclick="S.acc=\''+c+'\';save(1)"></i>').join('');
+ $('fs').value=S.fs;$('sndBtn').textContent=S.snd?'روشن':'خاموش'}
+function applyTheme(){const s=document.documentElement.style;s.setProperty('--purple',S.acc);s.setProperty('--purple2',S.acc);document.querySelector('.app').style.setProperty('--fs',S.fs)}
+function renderAll(){rDash();rList();rCal();rSet()}
+function showTab(t){['dash','create','list','cal','set'].forEach(k=>$('t-'+k).classList.toggle('hidden',k!==t));
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.t===t));window.scrollTo({top:0});renderAll()}
+
+/* ---------- backup ---------- */
+const dump=()=>JSON.stringify({app:'RadReminder',v:3,data:S});
+function exportData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([dump()],{type:'application/json'}));a.download='radreminder-backup.json';a.click();toast('فایل پشتیبان ساخته شد')}
+async function copyData(){try{await navigator.clipboard.writeText(dump());toast('پشتیبان کپی شد')}catch(e){toast('کپی ممکن نشد؛ از «ذخیره فایل» استفاده کن')}}
+function importData(el){const f=el.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o.data||!Array.isArray(o.data.r))throw 0;S=o.data;save();toast('اطلاعات بازیابی شد ✦')}catch(e){toast('فایل پشتیبان معتبر نیست')}};rd.readAsText(f)}
+
+applyTheme();showTab('dash');sched();check();
+</script>
+</body>
+</html>

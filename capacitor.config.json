@@ -1,0 +1,9 @@
+{
+  "appId": "ir.radreminder.app",
+  "appName": "RadReminder",
+  "webDir": "www",
+  "backgroundColor": "#07060b",
+  "plugins": {
+    "LocalNotifications": { "iconColor": "#8b5cf6" }
+  }
+}
